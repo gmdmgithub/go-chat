@@ -10,23 +10,6 @@ import (
 	"github.com/joho/godotenv"
 )
 
-// templateHendler - struct for html templates
-type templateHendler struct {
-	once     sync.Once
-	filename string
-	template *template.Template
-}
-
-func (t *templateHendler) ServerHTTP(w http.ResponseWriter, r *http.Request) {
-	t.once.Do(func() {
-		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
-		err := t.template.Execute(w, nil)
-		if err != nil {
-			log.Fatalf("Templates not readed with exception: %v", err)
-		}
-	})
-}
-
 var myEnv map[string]string
 
 func loadDotEnv() {
@@ -37,26 +20,36 @@ func loadDotEnv() {
 	}
 }
 
+// templateHendler - struct for html templates
+type templateHendler struct {
+	once     sync.Once
+	filename string
+	template *template.Template
+}
+
+func (t *templateHendler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	t.once.Do(func() {
+		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
+		err := t.template.Execute(w, nil)
+		if err != nil {
+			log.Fatalf("Templates not loaded with error: %v", err)
+		}
+	})
+}
+
 func main() {
 
 	loadDotEnv()
+	//first apprach with HandleFunc
+	//http.HandleFunc("/", func (http.ResponseWriter, r *http.Request){w.Write([]byte(`html .....`})
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<meta charset="UTF-8">
-				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<meta http-equiv="X-UA-Compatible" content="ie=edge">
-				<title>Chat app</title>
-			</head>
-			<body>
-				<h1>Chat app stats here!</h1>
-			</body>
-			</html>
-		`))
-	})
+	r := newRoom()
+
+	http.Handle("/", &templateHendler{filename: "index.html"})
+
+	http.Handle("/room", r)
+	// get the room going
+	go r.run()
 
 	port := myEnv["PORT"]
 	if len(port) == 0 {
