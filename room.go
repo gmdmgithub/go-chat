@@ -35,12 +35,15 @@ func (r *room) run() {
 		case client := <-r.join:
 			// joining
 			r.clients[client] = true
+			log.Println("cient joined")
 		case client := <-r.leave:
 			// leaving
 			delete(r.clients, client)
 			close(client.send)
+			log.Println("cient left")
 		case msg := <-r.forward:
 			// forward message to all clients
+			log.Println("cient forwarded")
 			for client := range r.clients {
 				select {
 				case client.send <- msg:
@@ -68,6 +71,7 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		log.Fatal("ServeHTTP:", err)
 		return
 	}
+	log.Println("room serve")
 	client := &client{
 		socket: socket,
 		send:   make(chan []byte, messageBufferSize),

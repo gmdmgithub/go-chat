@@ -28,13 +28,16 @@ type templateHendler struct {
 }
 
 func (t *templateHendler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	log.Println("cient templatehendler")
 	t.once.Do(func() {
+		log.Printf("read file once %v", t.filename)
 		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
-		err := t.template.Execute(w, nil)
-		if err != nil {
-			log.Fatalf("Templates not loaded with error: %v", err)
-		}
 	})
+	err := t.template.Execute(w, nil)
+	if err != nil {
+		log.Fatalf("Templates not loaded with error: %v", err)
+	}
+
 }
 
 func main() {
@@ -44,6 +47,8 @@ func main() {
 	//http.HandleFunc("/", func (http.ResponseWriter, r *http.Request){w.Write([]byte(`html .....`})
 
 	r := newRoom()
+
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	http.Handle("/", &templateHendler{filename: "index.html"})
 

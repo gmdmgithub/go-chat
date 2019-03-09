@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -18,6 +20,7 @@ func (c *client) read() {
 	for {
 		if _, msg, err := c.socket.ReadMessage(); err == nil {
 			c.room.forward <- msg
+			log.Printf("message read %v", msg)
 		} else {
 			break
 		}
@@ -30,6 +33,7 @@ func (c *client) write() {
 		if err := c.socket.WriteMessage(websocket.TextMessage, msg); err != nil {
 			break
 		}
+		log.Printf("message write %v", msg)
 	}
 	c.socket.Close()
 }
