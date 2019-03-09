@@ -48,7 +48,7 @@ func main() {
 	http.Handle("/", &templateHendler{filename: "index.html"})
 
 	http.Handle("/room", r)
-	// get the room going
+	// start a room conversation (single room in new thread)
 	go r.run()
 
 	port := myEnv["PORT"]
