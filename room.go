@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gmdmgithub/chat/trace"
 	"github.com/gorilla/websocket"
@@ -38,6 +37,7 @@ func (r *room) run() {
 			close(client.send)
 			r.tracer.Trace("Client left")
 		case msg := <-r.forward:
+			r.tracer.Trace("Message received: ", string(msg))
 			// forward message to all clients
 			for client := range r.clients {
 				select {
@@ -88,6 +88,7 @@ func newRoom() *room {
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
-		tracer:  trace.New(os.Stdout),
+		// tracer:  trace.New(os.Stdout),
+		tracer: trace.Off(),
 	}
 }

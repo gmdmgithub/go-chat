@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sync"
 
@@ -45,12 +46,12 @@ func (t *templateHendler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	trace.SayHello()
 	loadDotEnv()
 	//first apprach with HandleFunc
 	//http.HandleFunc("/", func (http.ResponseWriter, r *http.Request){w.Write([]byte(`html .....`})
 
 	r := newRoom()
+	r.tracer = trace.New(os.Stdout)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 

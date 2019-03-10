@@ -20,7 +20,7 @@ func (c *client) read() {
 	for {
 		if _, msg, err := c.socket.ReadMessage(); err == nil {
 			c.room.forward <- msg
-			log.Printf("message read %v", msg)
+			log.Printf("message read %v", string(msg))
 		} else {
 			break
 		}
@@ -33,7 +33,7 @@ func (c *client) write() {
 		if err := c.socket.WriteMessage(websocket.TextMessage, msg); err != nil {
 			break
 		}
-		log.Printf("message write %v", msg)
+		log.Printf("message write %v", string(msg))
 	}
 	c.socket.Close()
 }
