@@ -33,7 +33,9 @@ func (t *templateHendler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Printf("read file once %v", t.filename)
 		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 	})
-	err := t.template.Execute(w, nil)
+
+	err := t.template.Execute(w, r)
+
 	if err != nil {
 		log.Fatalf("Templates not loaded with error: %v", err)
 	}

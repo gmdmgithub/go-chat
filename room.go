@@ -19,16 +19,7 @@ type room struct {
 	clients map[*client]bool
 }
 
-// newRoom makes a new room that is ready to go.
-func newRoom() *room {
-	return &room{
-		forward: make(chan []byte),
-		join:    make(chan *client),
-		leave:   make(chan *client),
-		clients: make(map[*client]bool),
-	}
-}
-
+// run - infinitive method to handle three defined channels
 func (r *room) run() {
 	for {
 		select {
@@ -65,6 +56,7 @@ const (
 
 var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
 
+// ServeHTPP for the room struct allows to triger ServeHTTP - for case room is send as an interface of http.Handler
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
@@ -81,4 +73,14 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	defer func() { r.leave <- client }()
 	go client.write()
 	client.read()
+}
+
+// newRoom makes a new room that is ready to go.
+func newRoom() *room {
+	return &room{
+		forward: make(chan []byte),
+		join:    make(chan *client),
+		leave:   make(chan *client),
+		clients: make(map[*client]bool),
+	}
 }

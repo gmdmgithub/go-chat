@@ -15,7 +15,6 @@ if (!window["WebSocket"]) {
     document.querySelector("#submit").style.cursor="auto"; 
 
 } else {
-
     var socket = null;
     var messages = document.querySelectorAll("#messages");
 
@@ -39,7 +38,7 @@ if (!window["WebSocket"]) {
     });
 
 
-    socket = new WebSocket("ws://localhost:8081/room");
+    socket = new WebSocket(`ws://${socketAddress}/room`);
     socket.onclose = () => {
         alert("Connection has been closed.");
     }
