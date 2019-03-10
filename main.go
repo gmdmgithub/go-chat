@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/gmdmgithub/chat/trace"
 	"github.com/joho/godotenv"
 )
 
@@ -44,6 +45,7 @@ func (t *templateHendler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
+	trace.SayHello()
 	loadDotEnv()
 	//first apprach with HandleFunc
 	//http.HandleFunc("/", func (http.ResponseWriter, r *http.Request){w.Write([]byte(`html .....`})

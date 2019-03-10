@@ -24,3 +24,8 @@ func (t *tracer) Trace(arg ...interface{}) {
 func New(w io.Writer) Tracer {
 	return &tracer{out: w}
 }
+
+// SayHello - say something - testing
+func SayHello() {
+	fmt.Println("Hi there!")
+}

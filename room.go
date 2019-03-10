@@ -3,7 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/gmdmgithub/chat/trace"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,6 +19,9 @@ type room struct {
 	leave chan *client
 	// clients holds all current clients in this room.
 	clients map[*client]bool
+	// tracer will receive trace information of activity
+	// in the room.
+	tracer trace.Tracer
 }
 
 // run - infinitive method to handle three defined channels
@@ -26,23 +31,24 @@ func (r *room) run() {
 		case client := <-r.join:
 			// joining
 			r.clients[client] = true
-			log.Println("cient joined")
+			r.tracer.Trace("New client joined")
 		case client := <-r.leave:
 			// leaving
 			delete(r.clients, client)
 			close(client.send)
-			log.Println("cient left")
+			r.tracer.Trace("Client left")
 		case msg := <-r.forward:
 			// forward message to all clients
-			log.Println("cient forwarded")
 			for client := range r.clients {
 				select {
 				case client.send <- msg:
-				// send the message
+					// send the message
+					r.tracer.Trace(" ... sent to client")
 				default:
 					// failed to send
 					delete(r.clients, client)
 					close(client.send)
+					r.tracer.Trace("failed to send... cleaned up client")
 				}
 			}
 		}
@@ -82,5 +88,6 @@ func newRoom() *room {
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
+		tracer:  trace.New(os.Stdout),
 	}
 }
