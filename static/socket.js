@@ -5,14 +5,18 @@ function addMesage(msg){
     document.getElementById("messages").appendChild(node); // Append <li> to <ul> with id="myList"
 }
 
+function disableDialog(){
+    document.querySelector("#submit").disabled  = true;
+    document.querySelector("#chatbox").querySelector("textarea").disabled  = true;
+    document.querySelector("#submit").style.backgroundColor="gray";
+    document.querySelector("#submit").style.cursor="auto";
+}
+
 if (!window["WebSocket"]) {
 
     // alert("Error: Your browser does not support websockets.")
     addMesage("Error: Your browser does not support websockets.");
-    document.querySelector("#submit").disabled  = true;
-    document.querySelector("#chatbox").querySelector("textarea").disabled  = true;
-    document.querySelector("#submit").style.backgroundColor="gray";
-    document.querySelector("#submit").style.cursor="auto"; 
+    disableDialog(); 
 
 } else {
     var socket = null;
