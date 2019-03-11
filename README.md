@@ -31,6 +31,11 @@ go get github.com/gorilla/websocket
 go get github.com/joho/godotenv
 ```
 
+### OAuth2 is implemented by Goth lib
+
+``` bash
+go get golang.org/x/oauth2
+```
 
 ## Version
 
