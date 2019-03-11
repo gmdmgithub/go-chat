@@ -3,6 +3,7 @@ package trace
 import (
 	"fmt"
 	"io"
+	"time"
 )
 
 // Tracer is the interface that describes an object capable of
@@ -16,6 +17,8 @@ type tracer struct {
 }
 
 func (t *tracer) Trace(arg ...interface{}) {
+	t.out.Write([]byte(fmt.Sprint(time.Now().Format(time.RFC3339))))
+	t.out.Write([]byte(fmt.Sprint(" ")))
 	t.out.Write([]byte(fmt.Sprint(arg...)))
 	t.out.Write([]byte("\n"))
 }
