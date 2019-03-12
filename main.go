@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -34,12 +37,29 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
 		log.Printf("read file once %v", t.filename)
 		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
+
 	})
+	userData := map[string]interface{}{
+		"Host": r.Host,
+	}
+	cookie, err := r.Cookie("auth")
+	if err == nil {
+		data, err := base64.StdEncoding.DecodeString(cookie.Value)
+		if err == nil {
 
-	err := t.template.Execute(w, r)
+			var user googleUser
+			json.Unmarshal(data, &user)
+			log.Printf("User data are: %v", user)
+			userData["UserData"] = user
+			t.template.Execute(w, userData)
+		} else {
+			fmt.Printf("Error: %v\n", err)
+			t.template.Execute(w, r)
+		}
 
-	if err != nil {
-		log.Fatalf("Templates not loaded with error: %v", err)
+	} else {
+		fmt.Printf("Error: %v\n", err)
+		t.template.Execute(w, r)
 	}
 
 }
