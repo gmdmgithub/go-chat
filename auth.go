@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -49,8 +50,8 @@ type authHandler struct {
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Println("Auth - start ...")
-	val1, val2 := r.Cookie("auth")
-	log.Printf("Coockie values %v %v", val1, val2)
+	cookie, _ := r.Cookie("auth")
+	log.Printf("Coockie values %v", cookie)
 	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
 		// not authenticated
 		w.Header().Set("Location", "/login")
@@ -59,7 +60,16 @@ func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// some other error - panic system stops
 		panic(err.Error())
 	} else {
-		// success - call the next handler
+		// success check cooki and finally call the next handler
+		// Cookie data
+		// data, err := base64.StdEncoding.DecodeString(cookie.Value)
+		// if err != nil {
+		// 	fmt.Printf("Error: %v", err)
+		// }
+
+		// var user googleUser
+		// json.Unmarshal(data, &user)
+		// log.Printf("User data are: %v", user)
 		h.next.ServeHTTP(w, r)
 	}
 }
@@ -96,12 +106,12 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		//fmt.Fprintf(w, "Content: %s\n", content)
 		userStr, err := json.Marshal(user)
 		log.Printf("Content: %v\n", string(userStr))
-		// authCookieValue := objx.New(map[string]interface{}{
-		// 	"name": user.Name(),
-		// }).MustBase64()
+
+		// data := "some string to decode"
+		// decode := base64.StdEncoding.EncodeToString([]byte(data))
 		http.SetCookie(w, &http.Cookie{
 			Name:  "auth",
-			Value: string(userStr),
+			Value: base64.StdEncoding.EncodeToString(userStr),
 			Path:  "/"})
 		w.Header()["Location"] = []string{"/chat"}
 		w.WriteHeader(http.StatusTemporaryRedirect)
@@ -131,6 +141,7 @@ func getUserInfo(state string, code string) (*googleUser, error) {
 
 	var user *googleUser
 	err = json.Unmarshal(contents, &user)
+	log.Printf("JSON of user data is %v", user)
 	if err != nil {
 		log.Printf("Error unmarshaling Google user %s\n", err.Error())
 		return nil, fmt.Errorf("failed reading response body: %s", err.Error())
