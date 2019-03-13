@@ -67,20 +67,22 @@ var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBuffer
 
 // ServeHTPP for the room struct allows to triger ServeHTTP - for case room is send as an interface of http.Handler
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	log.Println("room request started")
 	socket, err := upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		log.Fatal("ServeHTTP:", err)
+		log.Printf("ServeHTTP FATAL PROBLEM: %v\n", err)
+		http.Redirect(w, req, "/chat", http.StatusTemporaryRedirect)
 		return
 	}
 	authCookie, err := req.Cookie("auth")
 	if err != nil {
-		log.Fatal("Failed to get auth cookie:", err)
+		log.Fatal("Failed to get auth cookie FATAL PROBLEM: ", err)
 		return
 	}
 
 	usrData, err := base64.StdEncoding.DecodeString(authCookie.Value)
 	if err != nil {
-		log.Fatal("Failed to get user data from cookie:", err)
+		log.Fatal("Failed to get user data from cookie FATAL PROBLEM: ", err)
 		return
 	}
 

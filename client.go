@@ -26,6 +26,9 @@ func (c *client) read() {
 		if err := c.socket.ReadJSON(&msg); err == nil {
 			msg.When = time.Now()
 			msg.Name = c.userData["name"].(string)
+			if picture, ok := c.userData["picture"]; ok {
+				msg.Picture = picture.(string)
+			}
 			c.room.forward <- msg
 			log.Printf("client read %v", c.userData)
 			log.Printf("message read %v", msg)

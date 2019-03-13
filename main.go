@@ -45,6 +45,7 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	formatted := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
 		tm.Year(), tm.Month(), tm.Day(),
 		tm.Hour(), tm.Minute(), tm.Second())
+
 	userData := map[string]interface{}{
 		"Host": r.Host,
 		"Date": formatted,
@@ -80,22 +81,10 @@ func main() {
 	}
 
 	oauthInit()
-
-	//first apprach with HandleFunc
-	//http.HandleFunc("/", func (http.ResponseWriter, r *http.Request){w.Write([]byte(`html .....`})
-
 	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
 
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-
-	// http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
-	http.Handle("/login", &templateHandler{filename: "login.html"})
-	http.HandleFunc("/auth/", loginHandler)
-
-	http.Handle("/room", r)
-
-	http.Handle("/chat", MustAuth(&templateHandler{filename: "index.html"}))
+	initRouts(r)
 
 	// start a room conversation (single room in new thread)
 	go r.run()

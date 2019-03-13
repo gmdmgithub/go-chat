@@ -18,9 +18,13 @@ form >textarea{
     background-color: #f8f8f8;
     resize: none;
 }
-input, label { 
+input, .label { 
     display: block; 
 }
+.label{
+    line-height: 30px;
+}
+
 ul { 
     list-style: none; 
     align-content: center;
@@ -39,3 +43,63 @@ form >input[type="submit"]{
     cursor: pointer;
 
 }
+.picture{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.navigation {
+    list-style: none;
+    margin: 0; 
+    background: #00bfff;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .navigation a {
+    text-decoration: none;
+    display: block;
+    background: #00a2ff;
+    padding: 1em;
+    color: #fff;
+    font-weight: bold;
+    min-width: 80px;
+    text-align: center;
+  }
+  
+  .navigation a:hover {
+    background: #4d05f7;
+  }
+  
+  @media all and (max-width: 800px) {
+    .navigation {
+      justify-content: space-around;
+    }
+    .navigation li {
+        width: 100%;
+    }
+  }
+  
+  @media all and (max-width: 600px) {
+    .navigation {
+      align-content:stretch;
+      flex-flow: column wrap;
+      padding: 0;
+    }
+    .navigation li {
+        width: 100%;
+    }
+    .navigation a { 
+      text-align: center; 
+      padding: 10px;
+      align-content:stretch;
+      border-top: 1px solid rgba(255,255,255,0.3); 
+      border-bottom: 1px solid rgba(0,0,0,0.1); 
+    }
+  
+    
+    .navigation li:last-of-type a {
+      border-bottom: none;
+    }
+  }

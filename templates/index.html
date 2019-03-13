@@ -14,10 +14,19 @@
 
 <body>
     <div class="container">
+        <ul class="navigation">
+            <li><a href="/">Home</a></li>
+            <li><a href="/chat">Chat</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
         <h1>Chat app stats here! - version from template!</h1>
         <ul id="messages"></ul>
         <form id="chatbox">
-            <label for="message">{{.UserData.Name}}</label>
+            <div class="label">
+                <img class="picture" src="{{.UserData.Picture}}" alt="{{.UserData.Name}}" align="center">
+                <label for="message">{{.UserData.Name}}</label>
+            </div>
             <textarea name="message" id="message"></textarea>
             <input id="submit" type="submit" value="Send" />
         </form>
