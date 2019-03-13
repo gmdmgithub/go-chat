@@ -38,7 +38,6 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.once.Do(func() {
 		log.Printf("read file once %v", t.filename)
 		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
-
 	})
 
 	tm := time.Now()
