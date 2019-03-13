@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/gmdmgithub/chat/trace"
 	"github.com/joho/godotenv"
@@ -39,8 +40,15 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
 
 	})
+
+	tm := time.Now()
+
+	formatted := fmt.Sprintf("%d-%02d-%02dT%02d:%02d:%02d",
+		tm.Year(), tm.Month(), tm.Day(),
+		tm.Hour(), tm.Minute(), tm.Second())
 	userData := map[string]interface{}{
 		"Host": r.Host,
+		"Date": formatted,
 	}
 	cookie, err := r.Cookie("auth")
 	if err == nil {

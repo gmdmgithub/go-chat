@@ -1,7 +1,14 @@
-function addMesage(msg){
+function addMesage(name, msg){
     var node = document.createElement("LI"); // Create a <li> node
-    var textnode = document.createTextNode(msg); // Create a text node
-    node.appendChild(textnode); // Append the text to <li>
+    //var textnode = document.createTextNode(msg); // Create a text node
+    var strongMsg = document.createElement('strong') //create stronge node
+    var  spanMsg = document.createElement('span'); // Create span node
+    var textnode = document.createTextNode(": ");
+    strongMsg.innerHTML = name;
+    spanMsg.innerHTML = msg;
+    node.appendChild(strongMsg)
+    node.appendChild(textnode);
+    node.appendChild(spanMsg); // Append the text to <li>
     document.getElementById("messages").appendChild(node); // Append <li> to <ul> with id="myList"
 }
 
@@ -36,7 +43,8 @@ if (!window["WebSocket"]) {
             alert("Error: There is no socket connection.");
             return false;
         }
-        socket.send(msgBox.value);
+        //socket.send(msgBox.value);
+        socket.send(JSON.stringify({"Message": msgBox.value}));
         msgBox.value = "";
         return false;
     });
@@ -47,6 +55,11 @@ if (!window["WebSocket"]) {
         alert("Connection has been closed.");
     }
     socket.onmessage = (e) => {
-        addMesage(e.data);
+        console.log(`onmessage data is ${e.data}`);
+        
+        var msg = eval("("+e.data+")");
+        //var messsage = `<strong> ${msg.Name} </strong>: <span>${msg.Message}</span>`;
+        //addMesage(messsage);
+        addMesage(msg.Name,msg.Message)
     }
 }
