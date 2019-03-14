@@ -31,7 +31,7 @@ var (
 	oauthStateString  string
 )
 
-func oauthInit() {
+func initOAuth() {
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost" + myEnv["PORT"] + "/auth/callback/google",
 		ClientID:     myEnv["GOOGLE_CLIENT_ID"],

@@ -80,7 +80,7 @@ func main() {
 		port = ":8080"
 	}
 
-	oauthInit()
+	initOAuth()
 	r := newRoom()
 	r.tracer = trace.New(os.Stdout)
 

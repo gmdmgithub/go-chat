@@ -18,23 +18,21 @@ func initRouts(r *room) {
 
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "index.html"}))
 
+	http.HandleFunc("/logout", logout)
+
 	//socket communication
 	http.Handle("/room", r)
 
-	logout()
-
 }
 
-func logout() {
-	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Logout user ...")
-		http.SetCookie(w, &http.Cookie{
-			Name:   "auth",
-			Value:  "",
-			Path:   "/",
-			MaxAge: -1,
-		})
-		w.Header()["Location"] = []string{"/chat"}
-		w.WriteHeader(http.StatusTemporaryRedirect)
+func logout(w http.ResponseWriter, r *http.Request) {
+	log.Println("Logout user ...")
+	http.SetCookie(w, &http.Cookie{
+		Name:   "auth",
+		Value:  "",
+		Path:   "/",
+		MaxAge: -1,
 	})
+	w.Header()["Location"] = []string{"/chat"}
+	w.WriteHeader(http.StatusTemporaryRedirect)
 }
