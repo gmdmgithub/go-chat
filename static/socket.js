@@ -1,11 +1,18 @@
-function addMesage(name, msg){
+function addMesage(name, msg,url){
     var node = document.createElement("LI"); // Create a <li> node
     //var textnode = document.createTextNode(msg); // Create a text node
+    var imgNode = document.createElement('img')
     var strongMsg = document.createElement('strong') //create stronge node
     var  spanMsg = document.createElement('span'); // Create span node
-    var textnode = document.createTextNode(": ");
+    var textnode = document.createTextNode(":\u00A0");
     strongMsg.innerHTML = name;
     spanMsg.innerHTML = msg;
+    if(url){
+        imgNode.src=url;
+        imgNode.className="picture";
+        node.appendChild(imgNode);
+        node.appendChild(textnode);
+    }
     node.appendChild(strongMsg)
     node.appendChild(textnode);
     node.appendChild(spanMsg); // Append the text to <li>
@@ -60,6 +67,7 @@ if (!window["WebSocket"]) {
         var msg = eval("("+e.data+")");
         //var messsage = `<strong> ${msg.Name} </strong>: <span>${msg.Message}</span>`;
         //addMesage(messsage);
-        addMesage(msg.Name,msg.Message)
+        
+        addMesage(msg.Name,msg.Message,msg.Picture)
     }
 }

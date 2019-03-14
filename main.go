@@ -57,7 +57,7 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 			var user googleUser
 			json.Unmarshal(data, &user)
-			log.Printf("User data are: %v", user)
+			// log.Printf("User data are: %v", user)
 			userData["UserData"] = user
 			t.template.Execute(w, userData)
 		} else {
@@ -81,7 +81,8 @@ func main() {
 	}
 
 	initOAuth()
-	r := newRoom(UseAuthAvatar)
+	// r := newRoom(UseAuthAvatar)
+	r := newRoom(UseGravatar)
 	r.tracer = trace.New(os.Stdout)
 
 	initRouts(r)
