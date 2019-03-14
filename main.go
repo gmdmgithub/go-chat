@@ -81,7 +81,7 @@ func main() {
 	}
 
 	initOAuth()
-	r := newRoom()
+	r := newRoom(UseAuthAvatar)
 	r.tracer = trace.New(os.Stdout)
 
 	initRouts(r)

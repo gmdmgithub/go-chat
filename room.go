@@ -23,6 +23,9 @@ type room struct {
 	// tracer will receive trace information of activity
 	// in the room.
 	tracer trace.Tracer
+
+	// avatar is how avatar information will be obtained.
+	avatar Avatar
 }
 
 // run - infinitive method to handle three defined channels
@@ -106,7 +109,7 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // newRoom makes a new room that is ready to go.
-func newRoom() *room {
+func newRoom(avatar Avatar) *room {
 	return &room{
 		// forward: make(chan []byte),
 		forward: make(chan *message),
@@ -115,5 +118,6 @@ func newRoom() *room {
 		clients: make(map[*client]bool),
 		// tracer:  trace.New(os.Stdout),
 		tracer: trace.Off(),
+		avatar: avatar,
 	}
 }

@@ -17,3 +17,19 @@ type Avatar interface {
 	// a URL for the specified client.
 	GetAvatarURL(c *client) (string, error)
 }
+
+// AuthAvatar ...
+type AuthAvatar struct{}
+
+// UseAuthAvatar ...
+var UseAuthAvatar AuthAvatar
+
+// GetAvatarURL abstract a method of user avatar_url
+func (a AuthAvatar) GetAvatarURL(c *client) (string, error) {
+	if url, ok := c.userData["picture"]; ok { // TODO use something more general "picture"
+		if urlStr, ok := url.(string); ok {
+			return urlStr, nil
+		}
+	}
+	return "", ErrNoAvatarURL
+}
