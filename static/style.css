@@ -35,10 +35,14 @@ ul {
 li{
   display: flex;
   align-items: center;
-  margin: 5px 0;
+  
 }
-li > img, li > span{
+li > * {
   margin-right: 5px;
+  margin-top: 5px;
+}
+li > a {
+  margin: 0;
 }
 form >input[type="submit"]{
     width: 150px;
