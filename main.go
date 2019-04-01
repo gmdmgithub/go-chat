@@ -24,6 +24,12 @@ func loadDotEnv() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	//better simpler way is to load the file to ENV
+	// godotenv.Load()
+	// then all data avalable by
+	// os.Getenv("MY_KEY")
+	// os.Setenv("MY_NAME", "Alex")
 }
 
 // templateHandler - struct for html templates
@@ -75,6 +81,7 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	loadDotEnv()
+
 	port := myEnv["PORT"]
 	if len(port) == 0 {
 		port = ":8080"
@@ -82,17 +89,17 @@ func main() {
 
 	initOAuth()
 	// r := newRoom(UseAuthAvatar)
-	r := newRoom(UseGravatar)
-	r.tracer = trace.New(os.Stdout)
+	room := newRoom(UseGravatar)
+	room.tracer = trace.New(os.Stdout)
 
-	initRouts(r)
+	initRouts(room)
 
 	// start a room conversation (single room in new thread)
-	go r.run()
+	go room.run()
 
 	log.Printf("Main func running on port %s", port)
 	// start the web server
 	if err := http.ListenAndServe(port, nil); err != nil {
-		log.Fatal("ListenAndServe:", err)
+		log.Fatal("System crashed - ListenAndServe:", err)
 	}
 }
